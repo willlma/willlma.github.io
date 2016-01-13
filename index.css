@@ -1,0 +1,114 @@
+body {
+    font-family: "Lato", Georgia, serif;
+    max-width: 32rem;
+    background: white;
+    padding: 0 2rem;
+}
+
+h1 {
+    font-weight: normal;
+    color: #ddd;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+/*     word-spacing: -1px; */
+}
+h1 span {
+    font-weight: bold;
+}
+h3 {
+    margin: 2rem 0 1rem 0;
+    color: #aaa;
+    font-weight: normal;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+/*     text-align: center; */
+}
+a {
+    text-decoration: none;    
+}
+a:visited {
+    color: rgb(90, 47, 132);
+}
+a:not(.icon) {
+    border-bottom: 1px dashed #aaa;
+}
+.icons a > *:first-child {
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    display: block;
+}
+.icons span {
+    display: none;
+}
+.icon {
+    text-align: center;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+ul.horizontal {
+    display: flex;
+    justify-content: space-between;
+}
+p.center {
+    text-align: center;
+}
+p.small {
+    font-size: 0.8125rem;
+}
+/* a img, a svg {
+    transform: scale(1);
+    transition: transform 200ms;
+}
+a:hover img, a:hover svg {
+    transform: scale(1.2) translateZ(0);
+} */
+@media (max-width: 414px) {
+    .icons li {
+        width: 52px;
+    }
+}
+@media (min-width: 414px) {
+    h1 {
+        font-size: 2rem;
+    }
+}
+@media (min-width: 36rem) {
+    body {
+        margin : 0 auto;
+        text-align: justify;
+    }
+    .icons span {
+        font-size: 0.75rem;
+        position: relative;
+        top: -0.875rem;
+        text-align: center;
+        display: block;
+        opacity: 0;
+        transform: scale(0.8, 1);
+        transition: top 250ms, opacity 100ms 100ms, transform 250ms;
+    }
+    .stack span {
+        transform: scale(0.6, 1);
+    }
+    .icons a:hover span {
+        top: 0;
+        opacity: 1;
+        transform: scale(1);
+        transition: top 250ms, opacity 100ms, transform 250ms;
+    }
+
+}
+@media (min-width: 769px) {
+    html {
+        background: #ddd;
+    }
+    body {
+        margin-top: 2.5rem;
+        padding: 0.25rem 6rem;
+    }
+}
