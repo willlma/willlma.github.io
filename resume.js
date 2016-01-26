@@ -56,6 +56,7 @@
 
   var init = function() {
     var mapPosition = getPosition(elems.map);
+    elems.newMap.id = 'new-map';
     var mapStyle = {
       position: 'absolute',
       top: mapPosition.top + 'px',
@@ -85,72 +86,80 @@
     return transform;
   };
 
-  window.onload = function() {
-    // detect touch to make hover elems visible
-    if ('ontouchstart' in window) document.body.className = 'touch';
+  new FontFaceObserver('Open Sans').check().then(function() {
+    // setTimeout(function() {
+      // detect touch to make hover elems visible
+      if ('ontouchstart' in window) document.body.className = 'touch';
 
-    var transformations = init();
-    var ticking, transformComplete;
-    var update = function() {
-      var distance = Math.min(scrollY / 100, 1);
-      transformComplete = distance===1;
-      document.body.classList.toggle('compressed', transformComplete);
-      transformations.forEach(function(tr) {
-        tr.elem.style.transform = getTransformationCss(distance, tr);
-        if (!tr.scale && innerWidth < 668) ['phone', 'email'].forEach(function(name) {
-          elems[name].style.opacity = 1 - distance;
+      var transformations = init();
+      var ticking, transformComplete;
+      var update = function() {
+        var distance = Math.min(scrollY / 100, 1);
+        transformComplete = distance===1;
+        document.body.classList.toggle('compressed', transformComplete);
+        transformations.forEach(function(tr) {
+          tr.elem.style.transform = getTransformationCss(distance, tr);
+          if (!tr.scale && innerWidth < 668) ['phone', 'email'].forEach(function(name) {
+            elems[name].style.opacity = 1 - distance;
+          });
         });
-      });
-      elems.compressedHeader.style.opacity = Math.pow(distance, 0.5);
-      elems.shadow.style.opacity = Math.pow(distance, 4);
-      ticking = false;
-    };
-    var onScroll = function() {
-      if (ticking || scrollY > 100 && transformComplete)
-        return;
-      ticking = true;
-      requestAnimationFrame(update);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll);
-  };
-
-  if (window.innerWidth > 667) return;
-  var widths = {};
-  ['phone', 'email'].forEach(function(className) {
-    widths[className] = getComputedStyle(elems.header.querySelector('.' + className + ' a')).width;    
+        elems.compressedHeader.style.opacity = Math.pow(distance, 0.5);
+        elems.shadow.style.opacity = Math.pow(distance, 4);
+        ticking = false;
+      };
+      var onScroll = function() {
+        if (ticking || scrollY > 100 && transformComplete)
+          return;
+        ticking = true;
+        requestAnimationFrame(update);
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll);
+    // }, 10);
   });
-  var toggleExpanded = function(evt) {
-    var link = this.parentNode.getElementsByTagName('a')[0];
-    var width = widths[this.parentNode.classList.contains('phone') ? 'phone': 'email'];
-    var cs = 'contact-shown';
-    var expanded = elems.compressedHeader.getElementsByClassName(cs)[0];
-    if (expanded) {
-      if (expanded===link) {
-        link.classList.remove(cs);
-        elems.compressedHeader.classList.remove(cs);
-        link.style.width = '';
+
+  if (window.innerWidth < 500) {
+    var widths = {};
+    ['phone', 'email'].forEach(function(className) {
+      widths[className] = getComputedStyle(elems.header.querySelector('.' + className + ' a')).width;    
+    });
+    var toggleExpanded = function(evt) {
+      var link = this.parentNode.getElementsByTagName('a')[0];
+      var width = widths[this.parentNode.classList.contains('phone') ? 'phone': 'email'];
+      var cs = 'contact-shown';
+      var expanded = elems.compressedHeader.getElementsByClassName(cs)[0];
+      if (expanded) {
+        if (expanded===link) {
+          link.classList.remove(cs);
+          elems.compressedHeader.classList.remove(cs);
+          link.style.width = '';
+        } else {
+          link.classList.add(cs);
+          link.style.width = width;
+          expanded.classList.remove(cs);
+          expanded.style.width = '';
+        }
       } else {
         link.classList.add(cs);
+        elems.compressedHeader.classList.add(cs);
         link.style.width = width;
-        expanded.classList.remove(cs);
+      }
+      /*if (expanded && expanded!==link) {
+        expanded.classList.remove(className);
         expanded.style.width = '';
       }
-    } else {
-      link.classList.add(cs);
-      elems.compressedHeader.classList.add(cs);
-      link.style.width = width;
-    }
-    /*if (expanded && expanded!==link) {
-      expanded.classList.remove(className);
-      expanded.style.width = '';
-    }
-    var isExpanded = link.classList.toggle(className);
-    elems.compressedHeader.classList.toggle(className,  isExpanded);
-    if (isExpanded) link.style.width = widths['phone'];*/
-  };
-  [].forEach.call(elems.compressedHeader.getElementsByTagName('svg'), function(elem) {
-    elem.addEventListener('click', toggleExpanded);
-  });
+      var isExpanded = link.classList.toggle(className);
+      elems.compressedHeader.classList.toggle(className,  isExpanded);
+      if (isExpanded) link.style.width = widths['phone'];*/
+    };
+    [].forEach.call(elems.compressedHeader.getElementsByTagName('svg'), function(elem) {
+      elem.addEventListener('click', toggleExpanded);
+    });
+  } else if (toggleExpanded) {
+    toggleExpanded = null;
+    [].forEach.call(elems.compressedHeader.getElementsByTagName('svg'), function(elem) {
+      elem.removeEventListener('click', toggleExpanded);
+    });
+  }
 
 })();

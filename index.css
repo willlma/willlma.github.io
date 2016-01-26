@@ -1,5 +1,35 @@
+/* latin */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'),
+      url(assets/Lato-400.woff) format('woff'),
+      url(assets/Lato-400.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* latin */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Lato Bold'), local('Lato-Bold'),
+      url(assets/Lato-700.woff) format('woff'),
+      url(assets/Lato-700.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
 body {
-    font-family: "Lato", Georgia, serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+div {
+    font-family: "Lato", sans-serif;
     max-width: 32rem;
     background: white;
     padding: 0 2rem;
@@ -78,8 +108,8 @@ a:hover img, a:hover svg {
     }
 }
 @media (min-width: 36rem) {
-    body {
-        margin : 0 auto;
+    div {
+/*         margin : 0 auto; */
         text-align: justify;
     }
     .icons span {
@@ -103,12 +133,16 @@ a:hover img, a:hover svg {
     }
 
 }
-@media (min-width: 769px) {
-    html {
+@media (min-width: 48.0625rem) {
+    body {
         background: #ddd;
     }
-    body {
-        margin-top: 2.5rem;
+    div {
         padding: 0.25rem 6rem;
     }
+}
+@media (min-height: 58rem) {
+  html {
+    height: 100%;
+  }
 }
