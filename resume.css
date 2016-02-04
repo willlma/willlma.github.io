@@ -222,7 +222,7 @@ p:last-child {
         opacity: 0;
     }
 }
-@media (max-width: 667px) and not print  {
+@media only screen and (max-width: 667px)  {
     header li a {
         display: inline-block;
         transition: transform 402ms, width 402ms, opacity 402ms;
