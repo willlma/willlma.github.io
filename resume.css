@@ -4,7 +4,9 @@
   font-weight: 400;
   src: local('Open Sans'), local('OpenSans'),
       url(assets/OpenSans-400.woff) format('woff'),
-      url(assets/OpenSans-400.woff2) format('woff2');
+      url(assets/OpenSans-400.woff2) format('woff2'),
+      url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff) format('woff'),
+      url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 @font-face {
@@ -13,7 +15,9 @@
   font-weight: 700;
   src: local('Open Sans Bold'), local('OpenSans-Bold'),
       url(assets/OpenSans-700.woff) format('woff'),
-      url(assets/OpenSans-700.woff2) format('woff2');
+      url(assets/OpenSans-700.woff2) format('woff2'),
+      url(https://fonts.gstatic.com/s/opensans/v13/k3k702ZOKiLJc3WVjuplzKRDOzjiPcYnFooOUGCOsRk.woff) format('woff'),
+      url(https://fonts.gstatic.com/s/opensans/v13/k3k702ZOKiLJc3WVjuplzBampu5_7CjHW5spxoeN3Vs.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 body {

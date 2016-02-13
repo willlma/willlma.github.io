@@ -63,7 +63,7 @@
       left: mapPosition.left + 'px'
     };
     for (var prop in mapStyle) elems.newMap.style[prop] = mapStyle[prop];
-    document.body.appendChild(elems.newMap);
+    if (!document.body.contains(elems.newMap)) document.body.appendChild(elems.newMap);
     elems.map.style.visibility = 'hidden';
     var transformations = [];
     ['h1', '.phone', '.email'].forEach(function(selector, i) {

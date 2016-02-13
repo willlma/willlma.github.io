@@ -1,0 +1,25 @@
+{
+  "name": "willlma",
+  "version": "1.0.0",
+  "description": "Personal homepage and resume",
+  "main": "none",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willlma/willlma.github.io.git"
+  },
+  "author": "Will Marquardt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/willlma/willlma.github.io/issues"
+  },
+  "homepage": "https://github.com/willlma/willlma.github.io#readme",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-uglify": "^0.11.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-html-smoosher-install-fix": "^0.1.3"
+  }
+}
