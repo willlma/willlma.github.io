@@ -26,11 +26,13 @@ html {
 body {
     margin: 0;
     padding: 0;
-    height: 100%;
     font-family: "Lato", sans-serif;
-    max-width: 32rem;
+    max-width: 36rem;
     background: white;
     padding: 0 2rem;
+}
+body > *:not(section) {
+  display: none;
 }
 
 h1 {
@@ -53,10 +55,12 @@ h3 {
 /*     text-align: center; */
 }
 a {
-    text-decoration: none;    
+    text-decoration: none;
+    color: #4481fe;
 }
 a:visited {
     color: rgb(90, 47, 132);
+    color: rgb(100, 70, 130);
 }
 a:not(.icon) {
     border-bottom: 1px dashed #aaa;
@@ -84,6 +88,7 @@ ul.horizontal {
 }
 p.center {
     text-align: center;
+    display: block;
 }
 p.small {
     font-size: 0.8125rem;
@@ -106,10 +111,6 @@ a:hover img, a:hover svg {
     }
 }
 @media (min-width: 36rem) {
-    div {
-/*         margin : 0 auto; */
-        text-align: justify;
-    }
     .icons span {
         font-size: 0.75rem;
         position: relative;
@@ -123,61 +124,56 @@ a:hover img, a:hover svg {
     .stack span {
         transform: scale(0.6, 1);
     }
-    @keyframes jello {
-      from, 11.1%, to {
-        transform: none;
-      }
-
-      22.2% {
-        transform: skewX(-12.5deg) skewY(-12.5deg);
-      }
-
-      33.3% {
-        transform: skewX(6.25deg) skewY(6.25deg);
-      }
-
-      44.4% {
-        transform: skewX(-3.125deg) skewY(-3.125deg);
-      }
-
-      55.5% {
-        transform: skewX(1.5625deg) skewY(1.5625deg);
-      }
-
-      66.6% {
-        transform: skewX(-0.78125deg) skewY(-0.78125deg);
-      }
-
-      77.7% {
-        transform: skewX(0.390625deg) skewY(0.390625deg);
-      }
-
-      88.8% {
-        transform: skewX(-0.1953125deg) skewY(-0.1953125deg);
-      }
-    }
-    p:hover {
-      animation-name: jello;
-      transform-origin: center;
-    }
     /*.icons a:hover span {
         top: 0;
         opacity: 1;
         transform: scale(1);
         transition: top 250ms, opacity 100ms, transform 250ms;
     }*/
-
+    p {
+        text-align: justify;
+    } 
 }
-@media (min-width: 48.0625rem) {
+@media (min-width: 64rem) and (max-height: 60rem), (min-height: 60rem) {
     html {
         background: #ddd;
     }
-    body {
-        padding: 0.25rem 6rem;
-    }
+    
+
 }
-@media (min-height: 58rem) {
+@media (min-width: 55rem) and (max-height: 50rem) and (min-height: 37rem),
+    (min-width: 72rem) and (max-height: 64rem) and (min-height: 37rem) {
   html {
     height: 100%;
+  }
+  body {
+    display: flex;
+    max-width: 80rem;
+  }
+  section {
+    padding: 2rem;
+    flex: 1;
+  }
+}
+@media (min-width: 72rem) and (max-height: 64rem) and (min-height: 37rem) {
+  body {
+    background: transparent;
+  }
+  section {
+    background-color: white;
+    max-width: 28rem;
+    vertical-align: top;
+    padding: 4rem;
+  }
+  section:first-of-type {
+    margin-right: 4rem;
+  }
+}
+@media (min-height: 60rem) and (min-width: 30rem) {
+  html {
+    height: 100%;
+  }
+  body {
+      padding: 0 4rem 1rem 4rem;
   }
 }
