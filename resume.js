@@ -54,7 +54,7 @@
     return result;
   };
 
-  var init = function() {
+  function placeMap() {
     var mapPosition = getPosition(elems.map);
     elems.newMap.id = 'new-map';
     var mapStyle = {
@@ -65,6 +65,55 @@
     for (var prop in mapStyle) elems.newMap.style[prop] = mapStyle[prop];
     if (!document.body.contains(elems.newMap)) document.body.appendChild(elems.newMap);
     elems.map.style.visibility = 'hidden';
+  }
+
+  function toggleExpanded(parent, widths) {
+    var link = parent.getElementsByTagName('a')[0];
+    var width = widths[parent.classList.contains('phone') ? 'phone': 'email'];
+    var cs = 'contact-shown';
+    var expanded = elems.compressedHeader.getElementsByClassName(cs)[0];
+    if (expanded) {
+      if (expanded===link) {
+        link.classList.remove(cs);
+        elems.compressedHeader.classList.remove(cs);
+        link.style.width = '';
+      } else {
+        link.classList.add(cs);
+        link.style.width = width;
+        expanded.classList.remove(cs);
+        expanded.style.width = '';
+      }
+    } else {
+      link.classList.add(cs);
+      elems.compressedHeader.classList.add(cs);
+      link.style.width = width;
+    }
+  };
+
+  function contactInfoClickListeners() {
+    if (window.innerWidth < 668) {
+      var widths = {};
+      ['phone', 'email'].forEach(function(className) {
+        widths[className] = getComputedStyle(elems.header.querySelector('.' + className + ' a')).width;
+      });
+      [].forEach.call(elems.compressedHeader.getElementsByTagName('svg'), function(elem) {
+        elem.onclick = ({ currentTarget }) => toggleExpanded(currentTarget.parentNode, widths);
+      });
+    } else {
+      [].forEach.call(elems.compressedHeader.getElementsByTagName('svg'), function(elem) {
+        elem.onclick = null;
+      });
+    }
+  }
+
+  function contactOpacity(opacity) {
+    ['phone', 'email'].forEach(function(name) {
+      elems[name].style.opacity = opacity;
+    });
+  }
+
+  var init = function() {
+    placeMap();
     var transformations = [];
     ['h1', '.phone', '.email'].forEach(function(selector, i) {
       transformations.push(getTransformation(
@@ -73,6 +122,8 @@
         !i
       ));
     });
+    contactInfoClickListeners();
+    contactOpacity(1);
     return transformations;
   };
 
@@ -86,80 +137,42 @@
     return transform;
   };
 
-  new FontFaceObserver('Open Sans').check().then(function() {
-    // setTimeout(function() {
-      // detect touch to make hover elems visible
-      if ('ontouchstart' in window) document.body.className = 'touch';
 
-      var transformations = init();
-      var ticking, transformComplete;
-      var update = function() {
-        var distance = Math.min(scrollY / 100, 1);
-        transformComplete = distance===1;
-        document.body.classList.toggle('compressed', transformComplete);
-        transformations.forEach(function(tr) {
-          tr.elem.style.transform = getTransformationCss(distance, tr);
-          if (!tr.scale && innerWidth < 668) ['phone', 'email'].forEach(function(name) {
-            elems[name].style.opacity = 1 - distance;
-          });
-        });
-        elems.compressedHeader.style.opacity = Math.pow(distance, 0.5);
-        elems.shadow.style.opacity = Math.pow(distance, 4);
-        ticking = false;
-      };
-      var onScroll = function() {
-        if (ticking || scrollY > 100 && transformComplete)
-          return;
-        ticking = true;
-        requestAnimationFrame(update);
-      };
-      onScroll();
-      window.addEventListener('scroll', onScroll);
-    // }, 10);
+  new FontFaceObserver('Open Sans').check().then(function() {
+    // detect touch to make hover elems visible
+    if ('ontouchstart' in window) document.body.className = 'touch';
+
+    var transformations = init();
+    var ticking, transformComplete;
+    var update = function() {
+      var distance = Math.min(scrollY / 100, 1);
+      transformComplete = distance===1;
+      document.body.classList.toggle('compressed', transformComplete);
+      transformations.forEach(function(tr) {
+        tr.elem.style.transform = getTransformationCss(distance, tr);
+        if (!tr.scale && innerWidth < 668) contactOpacity(1 - distance);
+      });
+      elems.compressedHeader.style.opacity = Math.pow(distance, 0.5);
+      elems.shadow.style.opacity = Math.pow(distance, 4);
+      ticking = false;
+    };
+    var onScroll = function() {
+      if (ticking || scrollY > 100 && transformComplete) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll);
+    let throttleId;
+    //basic throttle because I only use once and don't want dependencies
+    window.addEventListener('resize', () => {
+      if (throttleId) return;
+      throttleId = setTimeout(() => {
+        transformations = init();
+        throttleId = null;
+      }, 20);
+    });
   });
 
-  if (window.innerWidth < 500) {
-    var widths = {};
-    ['phone', 'email'].forEach(function(className) {
-      widths[className] = getComputedStyle(elems.header.querySelector('.' + className + ' a')).width;    
-    });
-    var toggleExpanded = function(evt) {
-      var link = this.parentNode.getElementsByTagName('a')[0];
-      var width = widths[this.parentNode.classList.contains('phone') ? 'phone': 'email'];
-      var cs = 'contact-shown';
-      var expanded = elems.compressedHeader.getElementsByClassName(cs)[0];
-      if (expanded) {
-        if (expanded===link) {
-          link.classList.remove(cs);
-          elems.compressedHeader.classList.remove(cs);
-          link.style.width = '';
-        } else {
-          link.classList.add(cs);
-          link.style.width = width;
-          expanded.classList.remove(cs);
-          expanded.style.width = '';
-        }
-      } else {
-        link.classList.add(cs);
-        elems.compressedHeader.classList.add(cs);
-        link.style.width = width;
-      }
-      /*if (expanded && expanded!==link) {
-        expanded.classList.remove(className);
-        expanded.style.width = '';
-      }
-      var isExpanded = link.classList.toggle(className);
-      elems.compressedHeader.classList.toggle(className,  isExpanded);
-      if (isExpanded) link.style.width = widths['phone'];*/
-    };
-    [].forEach.call(elems.compressedHeader.getElementsByTagName('svg'), function(elem) {
-      elem.addEventListener('click', toggleExpanded);
-    });
-  } else if (toggleExpanded) {
-    toggleExpanded = null;
-    [].forEach.call(elems.compressedHeader.getElementsByTagName('svg'), function(elem) {
-      elem.removeEventListener('click', toggleExpanded);
-    });
-  }
 
 })();
