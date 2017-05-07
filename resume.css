@@ -33,6 +33,12 @@ header {
   z-index: 2;
   margin: 0;
 }
+.noscript header {
+  position: static;
+}
+.noscript main, .noscript aside {
+  margin-top: 0;
+}
 .compressed header:not(.compressed) {
   visibility: hidden;
 }

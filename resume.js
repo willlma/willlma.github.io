@@ -1,6 +1,10 @@
 (function() {
   'use strict';
 
+  const { body, documentElement } = document;
+  const scrollDistance = 100;
+  const mobileWidth = 668;
+
   var cssToNum = function(css) {
     if (!css) return;
     var index = css.search(/[a-zA-Z]/),
@@ -10,7 +14,7 @@
     var unit = css.substring(index, comma);
     if (unit==='s') number *= 1000;
     else if (unit.indexOf('em')!==-1)
-      return number * cssToNum(getComputedStyle(document.documentElement).fontSize);
+      return number * cssToNum(getComputedStyle(documentElement).fontSize);
     return number;
   };
 
@@ -28,21 +32,10 @@
   elems.email = elems.header.querySelector('.email a');
   elems.compressedHeader = elems.header.cloneNode(true);
   elems.compressedHeader.className = 'compressed';
-  document.body.appendChild(elems.compressedHeader);
-
-  var getPosition = function(elem) {
-    /*var range = document.createRange();
-    range.selectNode(elem.childNodes[0]);*/
-    var rect = /*range*/elem.getBoundingClientRect();
-    return {
-      left: rect.left,
-      top: rect.top
-    };
-  };
 
   var getTransformation = function(standard, compressed, shouldScale) {
-    var position = getPosition(standard);
-    var compressedPosition = getPosition(compressed);
+    var position = standard.getBoundingClientRect();
+    var compressedPosition = compressed.getBoundingClientRect();
     var result = {
       elem: standard,
       x: position.left - compressedPosition.left,
@@ -55,7 +48,7 @@
   };
 
   function placeMap() {
-    var mapPosition = getPosition(elems.map);
+    var mapPosition = elems.map.getBoundingClientRect();
     elems.newMap.id = 'new-map';
     var mapStyle = {
       position: 'absolute',
@@ -63,7 +56,7 @@
       left: mapPosition.left + 'px'
     };
     for (var prop in mapStyle) elems.newMap.style[prop] = mapStyle[prop];
-    if (!document.body.contains(elems.newMap)) document.body.appendChild(elems.newMap);
+    if (!body.contains(elems.newMap)) body.appendChild(elems.newMap);
     elems.map.style.visibility = 'hidden';
   }
 
@@ -91,7 +84,7 @@
   };
 
   function contactInfoClickListeners() {
-    if (window.innerWidth < 668) {
+    if (window.innerWidth < mobileWidth) {
       var widths = {};
       ['phone', 'email'].forEach(function(className) {
         widths[className] = getComputedStyle(elems.header.querySelector('.' + className + ' a')).width;
@@ -137,41 +130,44 @@
     return transform;
   };
 
+  let throttleId, transformations;
+  //basic throttle because I only use once and don't want dependencies
+  window.addEventListener('resize', () => {
+    if (throttleId) return;
+    throttleId = setTimeout(() => {
+      transformations = init();
+      throttleId = null;
+    }, 100);
+  });
 
   new FontFaceObserver('Open Sans').check().then(function() {
+    if (documentElement.scrollHeight - innerHeight < scrollDistance) return;
+    body.classList.remove('noscript');
+    body.appendChild(elems.compressedHeader);
     // detect touch to make hover elems visible
-    if ('ontouchstart' in window) document.body.className = 'touch';
+    if ('ontouchstart' in window) body.classList.add('touch');
 
-    var transformations = init();
+    transformations = init();
     var ticking, transformComplete;
     var update = function() {
-      var distance = Math.min(scrollY / 100, 1);
+      var distance = Math.min(scrollY / scrollDistance, 1);
       transformComplete = distance===1;
-      document.body.classList.toggle('compressed', transformComplete);
+      body.classList.toggle('compressed', transformComplete);
       transformations.forEach(function(tr) {
         tr.elem.style.transform = getTransformationCss(distance, tr);
-        if (!tr.scale && innerWidth < 668) contactOpacity(1 - distance);
+        if (!tr.scale && innerWidth < mobileWidth) contactOpacity(1 - distance);
       });
       elems.compressedHeader.style.opacity = Math.pow(distance, 0.5);
       elems.shadow.style.opacity = Math.pow(distance, 4);
       ticking = false;
     };
     var onScroll = function() {
-      if (ticking || scrollY > 100 && transformComplete) return;
+      if (ticking || scrollY > scrollDistance && transformComplete) return;
       ticking = true;
       requestAnimationFrame(update);
     };
     onScroll();
     window.addEventListener('scroll', onScroll);
-    let throttleId;
-    //basic throttle because I only use once and don't want dependencies
-    window.addEventListener('resize', () => {
-      if (throttleId) return;
-      throttleId = setTimeout(() => {
-        transformations = init();
-        throttleId = null;
-      }, 20);
-    });
   });
 
 
