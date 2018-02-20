@@ -314,11 +314,9 @@ p:last-child {
   a:not(.icon), a.icon span {
     border-bottom: none;
   }
-  #finance {
+  #education {
     position: relative;
     page-break-before: always;
-/*     -webkit-region-break-inside: avoid;
-    page-break-inside: avoid; */
     margin-top: 2rem;
   }
   h3 a:after {
