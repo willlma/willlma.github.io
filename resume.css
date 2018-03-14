@@ -173,17 +173,9 @@ svg {
   fill: #4481fe;
 }
 h3 {
-/*   font-weight: 400; */
   margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
-/* h3:after {
-  vertical-align: middle;
-  margin: 0.25em;
-  content: url('assets/external-link.png');
-  color: #888;
-  visibility: hidden;
-} */
 .touch h3:after, h3:hover:after {
   visibility: visible;
 }
@@ -254,10 +246,6 @@ p:last-child {
   }
 }
 @media (min-width: 668px), print {
-  header {
-/*     margin: 0 1em; */
-/*     width: 100%; */
-  }
   header div {
     margin: 0 auto;
   }

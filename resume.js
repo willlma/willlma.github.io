@@ -47,7 +47,7 @@
     return result;
   };
 
-  function placeMap() {
+  function placeNewMap() {
     var mapPosition = elems.map.getBoundingClientRect();
     elems.newMap.id = 'new-map';
     var mapStyle = {
@@ -60,43 +60,10 @@
     elems.map.style.visibility = 'hidden';
   }
 
-  function toggleExpanded(parent, widths) {
-    var link = parent.getElementsByTagName('a')[0];
-    var width = widths[parent.classList.contains('phone') ? 'phone': 'email'];
-    var cs = 'contact-shown';
-    var expanded = elems.compressedHeader.getElementsByClassName(cs)[0];
-    if (expanded) {
-      if (expanded===link) {
-        link.classList.remove(cs);
-        elems.compressedHeader.classList.remove(cs);
-        link.style.width = '';
-      } else {
-        link.classList.add(cs);
-        link.style.width = width;
-        expanded.classList.remove(cs);
-        expanded.style.width = '';
-      }
-    } else {
-      link.classList.add(cs);
-      elems.compressedHeader.classList.add(cs);
-      link.style.width = width;
-    }
-  };
-
-  function contactInfoClickListeners() {
-    if (window.innerWidth < mobileWidth) {
-      var widths = {};
-      ['phone', 'email'].forEach(function(className) {
-        widths[className] = getComputedStyle(elems.header.querySelector('.' + className + ' a')).width;
-      });
-      [].forEach.call(elems.compressedHeader.getElementsByTagName('svg'), function(elem) {
-        elem.onclick = ({ currentTarget }) => toggleExpanded(currentTarget.parentNode, widths);
-      });
-    } else {
-      [].forEach.call(elems.compressedHeader.getElementsByTagName('svg'), function(elem) {
-        elem.onclick = null;
-      });
-    }
+  function reset() {
+    [elems.newMap, elems.compressedHeader].forEach((elem) => elem.remove);
+    elems.map.style.visibility = 'visible';
+    body.classList.add('noscript');
   }
 
   function contactOpacity(opacity) {
@@ -106,7 +73,7 @@
   }
 
   var init = function() {
-    placeMap();
+    placeNewMap();
     var transformations = [];
     ['h1', '.phone', '.email'].forEach(function(selector, i) {
       transformations.push(getTransformation(
@@ -115,7 +82,6 @@
         !i
       ));
     });
-    contactInfoClickListeners();
     contactOpacity(1);
     return transformations;
   };
@@ -130,25 +96,24 @@
     return transform;
   };
 
-  let throttleId, transformations;
-  //basic throttle because I only use once and don't want dependencies
-  window.addEventListener('resize', () => {
-    if (throttleId) return;
-    throttleId = setTimeout(() => {
-      transformations = init();
-      throttleId = null;
-    }, 100);
-  });
+  function shouldParallax() {
+    return (
+      documentElement.scrollHeight - innerHeight > scrollDistance &&
+      innerWidth >= mobileWidth
+    );
+  }
+
 
   new FontFaceObserver('Open Sans').check().then(function() {
-    if (documentElement.scrollHeight - innerHeight < scrollDistance) return;
+    if (!shouldParallax()) return;
+    let throttleId, transformations, ticking, transformComplete;
+    //basic throttle because I only use once and don't want dependencies
     body.classList.remove('noscript');
     body.appendChild(elems.compressedHeader);
     // detect touch to make hover elems visible
     if ('ontouchstart' in window) body.classList.add('touch');
 
     transformations = init();
-    var ticking, transformComplete;
     var update = function() {
       var distance = Math.min(scrollY / scrollDistance, 1);
       transformComplete = distance===1;
@@ -168,6 +133,17 @@
     };
     onScroll();
     window.addEventListener('scroll', onScroll);
+    window.addEventListener('resize', function() {
+      if (throttleId) return;
+      throttleId = setTimeout(() => {
+        if (shouldParallax()) transformations = init();
+        else {
+          reset();
+          window.removeEventListener('scroll', onScroll);
+        }
+        throttleId = null;
+      }, 100);
+    });
   });
 
 
